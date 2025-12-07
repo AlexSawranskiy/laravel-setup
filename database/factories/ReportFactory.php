@@ -3,25 +3,27 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Carbon;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Report>
- */
 class ReportFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = \App\Models\Report::class;
+
+    public function definition()
     {
-        $start = fake()->dateTimeThisMonth();
+        $startDate = $this->faker->dateTimeBetween('-1 year', 'now');
+        $endDate = Carbon::parse($startDate)->addDays(rand(1, 30));
+
         return [
-            'period_start' => $start,
-            'period_end' => fake()->dateTimeBetween($start, '+1 month'),
-            'payload' => json_encode(['tasks_completed' => rand(10, 50), 'new_users' => rand(1, 5)]),
-            'path' => '/reports/report-' . fake()->uuid() . '.pdf',
+            'name' => $this->faker->sentence(3),
+            'period_start' => $startDate,
+            'period_end' => $endDate,
+            'statistics' => [
+                'total_tasks' => $this->faker->numberBetween(10, 100),
+                'completed_tasks' => $this->faker->numberBetween(0, 50),
+                'pending_tasks' => $this->faker->numberBetween(0, 50),
+            ],
+            'file_path' => $this->faker->boolean(70) ? 'reports/' . $this->faker->uuid() . '.pdf' : null,
         ];
     }
 }

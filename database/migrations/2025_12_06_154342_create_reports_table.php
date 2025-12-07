@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->date('period_start');
             $table->date('period_end');
-            $table->json('payload')->nullable();
-            $table->string('path')->nullable();
+            $table->json('statistics');
+            $table->string('file_path')->nullable();
             $table->timestamps();
         });
     }
